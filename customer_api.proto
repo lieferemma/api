@@ -4,6 +4,7 @@ syntax="proto3";
 package lieferemma;
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 message Position {
     double latitude = 1;
@@ -25,21 +26,35 @@ enum DeliveryStatus {
 
 message DeliveryPoint {
     // Uuid v4
-    String uuid = 1;
+    string uuid = 1;
+    // position of this delivery point
     Position position = 2;
+    // planed arrival time for this delivery point
     google.protobuf.Timestamp scheduled_time = 3;
+    // minimum time in seconds delivery point is available at this position
+    uint64 parking_time = 4;
 
 }
 
-message Delivery {
-    string uuid = 1;
+// A delivery route
+message Route {
+    string route_uuid = 1;
+    repeated DeliveryPoint delivery_points = 2;
+    // Route delivery points further refining the route
+    repeated Position route_points = 3;
+}
+
+// A mobile shop (Emma)
+message MobileShop {
+    // 
+    string mobile_shop_uuid = 1;
     // Title of delivery to be displayed to customer e.g. Bakery John Doe
     string title = 2;
-    // Last location update
-    Position last_position = 3;
+    // Last location updated
+    Position current_position = 3;
     // Last location update
     google.protobuf.Timestamp last_seen = 4;
-    // Next delivery point
+    // Current delivery point
     DeliveryPoint current_delivery_point = 5;
     // Next delivery point
     DeliveryPoint next_delivery_point = 6;
@@ -49,11 +64,7 @@ message Delivery {
     uint64 next_delivery_point_eta = 8;
     // Estimated time of arrival at the pick up delivery point in seconds
     uint64 pick_up_delivery_point_eta = 9;
-}
-
-
-message Deliveries {
-    repeated Delivery;
+    Route route = 10;
 }
 
 // ISO Codes Currency
@@ -74,14 +85,15 @@ message Product {
 /// Product which is currently loaded into a vehicle for delivery and available for order
 message DeliveryProduct {
     Product product = 1;
-    // Number of articles available in delivery
+    // Number of articles available in delivery.
+    // Quantity is zero when product is out of stock.
     uint64 quantity_available = 2;
 }
 
 /// A product by a customer including the quantity ordered
 message OrderedProdct  {
     Product product = 1;
-    // Number of articles available in delivery
+    // Number of articles availableq in delivery
     uint64 quantity_ordered = 2;
     // Price in Euro cents
     uint64 total_price = 3;
@@ -89,14 +101,27 @@ message OrderedProdct  {
     Currency currency = 4;
 }
 
-message OrderReply {
-    string order_uuid = 1;
-    // total price in Euro cents
-    uint64 total = 2;
+message OrderRequest {
+    // Shop (emma) where the order was placed
+    string shop_uuid = 1;
+    // Location where the customer wants to pickup the order
+    DeliveryPoint pick_up_point = 2;
     // Currency to display
     Currency currency = 3;
     // Items that have been ordered by the customer
     repeated OrderedProdct ordered_products = 4;
+}
+
+message OrderReply {
+    string order_uuid = 1;
+    // human readable order id
+    string order_id = 2;
+    // Currency to display
+    Currency currency = 3;
+    // total price of all products in Euro cents ( total done by backend as point of truth)
+    uint64 total = 4;
+    // Items that have been ordered by the customer
+    repeated OrderedProdct ordered_products = 5;
 }
 
 message AvailableProductRequest {
@@ -104,20 +129,96 @@ message AvailableProductRequest {
 }
 
 message AvailableProductReply {
-    repeated DeliveryProduct deliverable_products = 1;
+    // Timestamp when this quantity was updated
+    google.protobuf.Timestamp updated = 1;
+    // Currently available products. 
+    // Quantity is zero if product is out of stock.
+    repeated DeliveryProduct deliverable_products = 2;
 }
 
+// Real time product available quantity for a given delivery
 message AvailableProductQuantityReply {
-    string product_uuid =1;
-    
+    string shop_uuid = 1;
+    // product uuid from Product
+    string product_uuid = 2;
+    uint32 quantity = 3;
+    // Timestamp when this quantity was updated
+    google.protobuf.Timestamp updated = 4;
+}
+
+message OrderStatusRequest {
+    string order_uuid = 1;
+}
+
+message OrderStatusReply {
+    string order_uuid = 1;
+    // Location where the customer wants to pickup the order
+    DeliveryPoint pick_up_point = 2;
+    // delivery status of requested order
+    MobileShop shop_status = 3;
 }
 
 service EndCustomer {
     // Not necessarily as in register a user account more like let me know when the delivery
     // reaches a destination I have shown interest in. And what deliveries can be displayed on the map.
-    rpc RegisterCustomerInterest (stream CustomerInterestRequest) returns (stream Deliveries);
+    rpc RegisterCustomerInterest (stream CustomerInterestRequest) returns (stream MobileShop);
     rpc PlaceOrder (OrderRequest) returns (OrderReply);
     rpc AvailableProducts(AvailableProductRequest) returns (AvailableProductReply);
-    rpc AvailableProductQuantity() returns (stream AvailableProductQuantityReply);
+    rpc OrderStatus (OrderStatusRequest) returns (OrderStatusReply);
 }
-  
+
+message DriverPosition {
+    Position position = 1;
+    google.protobuf.Timestamp updated = 2;
+}
+
+message SendPositionReply {}
+
+message ConfirmOrderDeliveryRequest {
+    // uuid of delivered order
+    string order_uuid = 1;
+    // Location where the customer picked up the order
+    DeliveryPoint pick_up_point = 2;
+}
+
+message UpdateDeliveryStatusRequest {
+    string mobile_shop_uuid = 1;
+    DeliveryStatus delivery_status = 2;
+}
+
+message UpdateDeliveryStatusReply  {
+    // for now empty, keep it for future use
+}
+
+message ConfirmOrderDeliveryReply {
+    // for now empty, keep it for future use
+}
+
+message GetOrdersRequest {
+    string mobile_shop_uuid = 1;
+    // request orders for pick_up_point, this is optional
+    DeliveryPoint pick_up_point = 2;
+}
+
+message GetOrdersReply {
+    // customers order for the requested delivery
+    repeated OrderReply orders = 1;
+}
+
+message GetRouteRequest {
+    // route_id is a what3words style id, this is not request able by api
+    string route_id = 1;
+}
+
+service Driver {
+    // Retrieve current orders 
+    rpc GetOrders (GetOrdersRequest) returns (GetOrdersReply);
+
+    // For now there will likely only be one stream update at the beginning.
+    // The stream allows updating the route.
+    rpc GetRoute (GetRouteRequest) returns (stream Route);
+    rpc SendPosition (stream DriverPosition) returns (SendPositionReply);
+    // Order has been deliverd to customer, confirm delivery
+    rpc ConfirmOrderDelivery(ConfirmOrderDeliveryRequest) returns (ConfirmOrderDeliveryReply);
+    rpc UpdateDeliveryStatus(UpdateDeliveryStatusRequest) returns (UpdateDeliveryStatusReply);
+}
