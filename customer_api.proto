@@ -1,0 +1,123 @@
+
+syntax="proto3";
+
+package lieferemma;
+
+import "google/protobuf/timestamp.proto";
+
+message Position {
+    double latitude = 1;
+    double longitude = 2;
+}
+
+message CustomerInterestRequest {
+    // E.g. center of map
+    Position position_of_interest = 1;
+    // Radius of interest e.g. when viewing map
+    // May be ignored by server when exceeding a certain distance
+    int32 radius_in_meter = 2;
+}
+
+enum DeliveryStatus {
+    ON_TOUR = 0;
+    PARKED = 1;
+}
+
+message DeliveryPoint {
+    // Uuid v4
+    String uuid = 1;
+    Position position = 2;
+    google.protobuf.Timestamp scheduled_time = 3;
+
+}
+
+message Delivery {
+    string uuid = 1;
+    // Title of delivery to be displayed to customer e.g. Bakery John Doe
+    string title = 2;
+    // Last location update
+    Position last_position = 3;
+    // Last location update
+    google.protobuf.Timestamp last_seen = 4;
+    // Next delivery point
+    DeliveryPoint current_delivery_point = 5;
+    // Next delivery point
+    DeliveryPoint next_delivery_point = 6;
+    // Is the delivery vehicle currently stationary or not
+    DeliveryStatus delivery_status = 7;
+    // Estimated time of arrival at next delivery point in seconds
+    uint64 next_delivery_point_eta = 8;
+    // Estimated time of arrival at the pick up delivery point in seconds
+    uint64 pick_up_delivery_point_eta = 9;
+}
+
+
+message Deliveries {
+    repeated Delivery;
+}
+
+// ISO Codes Currency
+// https://de.wikipedia.org/wiki/ISO_4217
+enum Currency {
+    EUR = 978;
+}
+
+message Product {
+    string product_uiid = 1;
+    string title = 2;
+    // Price in Euro cents
+    uint64 price = 3;
+    // Currency to display
+    Currency currency = 4;
+}
+
+/// Product which is currently loaded into a vehicle for delivery and available for order
+message DeliveryProduct {
+    Product product = 1;
+    // Number of articles available in delivery
+    uint64 quantity_available = 2;
+}
+
+/// A product by a customer including the quantity ordered
+message OrderedProdct  {
+    Product product = 1;
+    // Number of articles available in delivery
+    uint64 quantity_ordered = 2;
+    // Price in Euro cents
+    uint64 total_price = 3;
+    // Currency to display
+    Currency currency = 4;
+}
+
+message OrderReply {
+    string order_uuid = 1;
+    // total price in Euro cents
+    uint64 total = 2;
+    // Currency to display
+    Currency currency = 3;
+    // Items that have been ordered by the customer
+    repeated OrderedProdct ordered_products = 4;
+}
+
+message AvailableProductRequest {
+    
+}
+
+message AvailableProductReply {
+    repeated DeliveryProduct deliverable_products = 1;
+}
+
+message AvailableProductQuantityReply {
+    string product_uuid =1;
+    
+}
+
+service EndCustomer {
+    // Not necessarily as in register a user account more like let me know when the delivery
+    // reaches a destination I have shown interest in. And what deliveries can be displayed on the map.
+    rpc RegisterCustomerInterest (stream CustomerInterestRequest) returns (stream Deliveries);
+    rpc PlaceOrder (OrderRequest) returns (OrderReply);
+    rpc AvailableProducts(AvailableProductRequest) returns (AvailableProductReply);
+    rpc AvailableProductQuantity() returns (stream AvailableProductQuantityReply);
+}
+  
