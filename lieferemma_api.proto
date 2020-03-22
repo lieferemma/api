@@ -123,12 +123,14 @@ message OrderReply {
     string order_uuid = 1;
     // human readable order id
     string order_id = 2;
+    // Location where the customer wants to pickup the order
+    DeliveryPoint pick_up_point = 3;
     // Currency to display
-    Currency currency = 3;
+    Currency currency = 4;
     // total price of all products in Euro cents ( total done by backend as point of truth)
-    uint64 total = 4;
+    uint64 total = 5;
     // Items that have been ordered by the customer
-    repeated OrderedProduct ordered_products = 5;
+    repeated OrderedProduct ordered_products = 6;
 }
 
 message AvailableProductRequest {
