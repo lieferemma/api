@@ -98,7 +98,7 @@ message DeliveryProduct {
 }
 
 /// A product by a customer including the quantity ordered
-message OrderedProdct  {
+message OrderedProduct  {
     Product product = 1;
     // Number of articles availableq in delivery
     uint64 quantity_ordered = 2;
@@ -116,7 +116,7 @@ message OrderRequest {
     // Currency to display
     Currency currency = 3;
     // Items that have been ordered by the customer
-    repeated OrderedProdct ordered_products = 4;
+    repeated OrderedProduct ordered_products = 4;
 }
 
 message OrderReply {
@@ -128,7 +128,7 @@ message OrderReply {
     // total price of all products in Euro cents ( total done by backend as point of truth)
     uint64 total = 4;
     // Items that have been ordered by the customer
-    repeated OrderedProdct ordered_products = 5;
+    repeated OrderedProduct ordered_products = 5;
 }
 
 message AvailableProductRequest {
