@@ -30,9 +30,8 @@ message DeliveryPoint {
     Position position = 2;
     // planed arrival time for this delivery point
     google.protobuf.Timestamp scheduled_time = 3;
-    // minimum time in seconds delivery point is available at this position
-    uint64 parking_time = 4;
-
+    // planed depature time (when parking position is left) for this delivery point
+    google.protobuf.Timestamp  departure_time = 4;
 }
 
 // A delivery route
