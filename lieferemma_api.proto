@@ -48,22 +48,24 @@ message MobileShop {
     // 
     string mobile_shop_uuid = 1;
     // Title of delivery to be displayed to customer e.g. Bakery John Doe
-    string title = 2;
+    string mobile_url = 2;
+
+    string title = 3;
     // Last location updated
-    Position current_position = 3;
+    Position current_position = 4;
     // Last location update
-    google.protobuf.Timestamp last_seen = 4;
+    google.protobuf.Timestamp last_seen = 5;
     // Current delivery point
-    DeliveryPoint current_delivery_point = 5;
+    DeliveryPoint current_delivery_point = 6;
     // Next delivery point
-    DeliveryPoint next_delivery_point = 6;
+    DeliveryPoint next_delivery_point = 7;
     // Is the delivery vehicle currently stationary or not
-    DeliveryStatus delivery_status = 7;
+    DeliveryStatus delivery_status = 8;
     // Estimated time of arrival at next delivery point in seconds
-    uint64 next_delivery_point_eta = 8;
+    uint64 next_delivery_point_eta = 9;
     // Estimated time of arrival at the pick up delivery point in seconds
-    uint64 pick_up_delivery_point_eta = 9;
-    Route route = 10;
+    uint64 pick_up_delivery_point_eta = 10;
+    Route route = 11;
 }
 
 // ISO Codes Currency
@@ -75,11 +77,16 @@ enum Currency {
 
 message Product {
     string product_uiid = 1;
+    // Title of the product 
     string title = 2;
+    // Description of the Product
+    string description  = 3;
+    // link to image of the product
+    string url = 4; 
     // Price in Euro cents
-    uint64 price = 3;
+    uint64 price = 5;
     // Currency to display
-    Currency currency = 4;
+    Currency currency = 6;
 }
 
 /// Product which is currently loaded into a vehicle for delivery and available for order
@@ -213,7 +220,7 @@ message GetRouteRequest {
 service Driver {
     // Retrieve current orders 
     rpc GetOrders (GetOrdersRequest) returns (GetOrdersReply);
-
+     
     // For now there will likely only be one stream update at the beginning.
     // The stream allows updating the route.
     rpc GetRoute (GetRouteRequest) returns (stream Route);
