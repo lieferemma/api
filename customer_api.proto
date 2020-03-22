@@ -69,6 +69,7 @@ message MobileShop {
 // ISO Codes Currency
 // https://de.wikipedia.org/wiki/ISO_4217
 enum Currency {
+    DEFAULT = 0;
     EUR = 978;
 }
 
