@@ -75,7 +75,7 @@ enum Currency {
 }
 
 message Product {
-    string product_uiid = 1;
+    string product_uuid = 1;
     // Title of the product 
     string title = 2;
     // Description of the Product
