@@ -28,9 +28,9 @@ message DeliveryPoint {
     string delivery_point_uuid = 1;
     // position of this delivery point
     Position position = 2;
-    // planed arrival time for this delivery point
+    // planned arrival time for this delivery point
     google.protobuf.Timestamp scheduled_time = 3;
-    // planed depature time (when parking position is left) for this delivery point
+    // planned depature time (when parking position is left) for this delivery point
     google.protobuf.Timestamp  departure_time = 4;
 }
 
