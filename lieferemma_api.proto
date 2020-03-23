@@ -25,7 +25,7 @@ enum DeliveryStatus {
 
 message DeliveryPoint {
     // Uuid v4
-    string uuid = 1;
+    string delivery_point_uuid = 1;
     // position of this delivery point
     Position position = 2;
     // planed arrival time for this delivery point
