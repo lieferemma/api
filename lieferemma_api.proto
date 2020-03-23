@@ -44,11 +44,11 @@ message Route {
 
 // A mobile shop (Emma)
 message MobileShop {
-    // 
+    //
     string mobile_shop_uuid = 1;
+    // link to image of shop
+    string image_url = 2;
     // Title of delivery to be displayed to customer e.g. Bakery John Doe
-    string mobile_url = 2;
-
     string title = 3;
     // Last location updated
     Position current_position = 4;
@@ -76,12 +76,12 @@ enum Currency {
 
 message Product {
     string product_uuid = 1;
-    // Title of the product 
+    // Title of the product
     string title = 2;
     // Description of the Product
     string description  = 3;
     // link to image of the product
-    string url = 4; 
+    string url = 4;
     // Price in Euro cents
     uint64 price = 5;
     // Currency to display
@@ -133,13 +133,13 @@ message OrderReply {
 }
 
 message AvailableProductRequest {
-    
+
 }
 
 message AvailableProductReply {
     // Timestamp when this quantity was updated
     google.protobuf.Timestamp updated = 1;
-    // Currently available products. 
+    // Currently available products.
     // Quantity is zero if product is out of stock.
     repeated DeliveryProduct deliverable_products = 2;
 }
@@ -219,9 +219,9 @@ message GetRouteRequest {
 }
 
 service Driver {
-    // Retrieve current orders 
+    // Retrieve current orders
     rpc GetOrders (GetOrdersRequest) returns (GetOrdersReply);
-     
+
     // For now there will likely only be one stream update at the beginning.
     // The stream allows updating the route.
     rpc GetRoute (GetRouteRequest) returns (stream Route);
