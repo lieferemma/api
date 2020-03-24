@@ -169,7 +169,7 @@ message OrderStatusReply {
 service EndCustomer {
     // Not necessarily as in register a user account more like let me know when the delivery
     // reaches a destination I have shown interest in. And what deliveries can be displayed on the map.
-    rpc RegisterCustomerInterest (stream CustomerInterestRequest) returns (stream MobileShop);
+    rpc RegisterCustomerInterest (CustomerInterestRequest) returns (stream MobileShop);
     rpc PlaceOrder (OrderRequest) returns (OrderReply);
     rpc AvailableProducts(AvailableProductRequest) returns (AvailableProductReply);
     rpc OrderStatus (OrderStatusRequest) returns (OrderStatusReply);
@@ -225,7 +225,7 @@ service Driver {
     // For now there will likely only be one stream update at the beginning.
     // The stream allows updating the route.
     rpc GetRoute (GetRouteRequest) returns (stream Route);
-    rpc SendPosition (stream DriverPosition) returns (SendPositionReply);
+    rpc SendPosition (DriverPosition) returns (SendPositionReply);
     // Order has been deliverd to customer, confirm delivery
     rpc ConfirmOrderDelivery(ConfirmOrderDeliveryRequest) returns (ConfirmOrderDeliveryReply);
     rpc UpdateDeliveryStatus(UpdateDeliveryStatusRequest) returns (UpdateDeliveryStatusReply);
