@@ -151,8 +151,10 @@ message OrderReply {
     repeated OrderedProduct ordered_products = 6;
 }
 
+//TODO: Decide if to use devlivery point or mobile shop uuid to get the available product
 message AvailableProductRequest {
-
+    
+    string mobile_shop_uuid = 1;
 }
 
 message AvailableProductReply {
@@ -251,18 +253,7 @@ service Driver {
 }
 
 // ########################################### Producer APIs ##################################
-/*
-TODO: Add get calls for the Products, Shop and Delivery Points
 
-The service is used by the producer backoffice it allows
-1. Add an new Product to your shop ( inkl. anzahl)
-2. Update existing Product ( update product description or inventory)
-3. Add Delivery Point ( where, when and how long)
-4 Update delviery Point
-5. getters for all 
-    - Schnittelle: Produkt anlegen, Inventar verwalten, Haltepunkte festlegen und länge
-
-*/
 
 message AddProductRequest {
     // shop id that the product will be part of 
@@ -284,6 +275,8 @@ message AddProductRequest {
 }
 
 
+
+
 message AddProductResponse {
     // Created uuid for your product
     string product_uuid = 1;
@@ -303,8 +296,50 @@ message CreateShopRequest {
 
 message CreateShopResponse {
     string mobile_shop_uuid = 1;
- 
 }
+
+message UpdateProductRequest {
+    // product uuid 
+    string product_uuid = 1;
+    // Title of the product
+    string title = 2;
+    // Description of the Product
+    string description  = 3;
+    // image transformed to a byte array ( is optional in the beginning)
+    bytes image = 4;
+    // Price in Euro cents
+    uint64 price = 5;
+    // Currency to display
+    Currency currency = 6;
+    // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
+    Unit unit = 7;
+    // The max possible order size for each product ( Defined to not have to create a inventory)
+    string max_order = 8;
+}
+
+message UpdateProductResponse {
+}
+
+message AddDeliveryPointRequest {
+    // Uuid v4
+    string mobile_shop_uuid = 1;
+    // position of this delivery point
+    Position position = 2;
+    // planned arrival time for this delivery point
+    google.protobuf.Timestamp scheduled_time = 3;
+    // planned depature time (when parking position is left) for this delivery point
+    google.protobuf.Timestamp  departure_time = 4;
+}
+
+message AddDeliveryPointResponse {
+     // Uuid v4 of the created point
+     string delivery_point_uuid = 1;
+
+}
+
+
+
+
 
 
 service Producer {
@@ -312,8 +347,4 @@ service Producer {
     rpc AddProduct( stream AddProductRequest) returns (stream AddProductResponse);
     rpc UpdateProduct( stream UpdateProductRequest) returns (stream UpdateProductResponse);
     rpc AddDeliveryPoint( stream AddDeliveryPointRequest) returns (stream AddDeliveryPointResponse);
-
-
-
-
 }
