@@ -60,10 +60,10 @@ message MobileShop {
     DeliveryPoint next_delivery_point = 7;
     // Is the delivery vehicle currently stationary or not
     DeliveryStatus delivery_status = 8;
-    // Estimated time of arrival at next delivery point in seconds
-    uint64 next_delivery_point_eta = 9;
-    // Estimated time of arrival at the pick up delivery point in seconds
-    uint64 pick_up_delivery_point_eta = 10;
+    // Estimated time of arrival at next delivery point
+    google.protobuf.Timestamp next_delivery_point_eta = 9;
+    // Estimated time of arrival at the pick up delivery point
+    google.protobuf.Timestamp pick_up_delivery_point_eta = 10;
     Route route = 11;
 }
 
