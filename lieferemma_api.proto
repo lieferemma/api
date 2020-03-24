@@ -43,6 +43,7 @@ message Route {
 }
 
 // A mobile shop (Emma)
+// This represents the shop as it can be seen from the customer perspective
 message MobileShop {
     //
     string mobile_shop_uuid = 1;
@@ -230,4 +231,31 @@ service Driver {
     // Order has been deliverd to customer, confirm delivery
     rpc ConfirmOrderDelivery(ConfirmOrderDeliveryRequest) returns (ConfirmOrderDeliveryReply);
     rpc UpdateDeliveryStatus(UpdateDeliveryStatusRequest) returns (UpdateDeliveryStatusReply);
+}
+
+// ########################################### Producer APIs ##################################
+/*
+TODO: Add get calls for the Products, Shop and Delivery Points
+
+The service is used by the producer backoffice it allows
+1. Add an new Product to your shop ( inkl. anzahl)
+2. Update existing Product ( update product description or inventory)
+3. Add Delivery Point ( where, when and how long)
+4 Update delviery Point
+5. getters for all 
+    - Schnittelle: Produkt anlegen, Inventar verwalten, Haltepunkte festlegen und länge
+
+*/
+
+
+
+service Producer {
+    rpc CreateShop( CreateShopRequest) returns (CreateShopResponse);
+    rpc AddProduct( stream AddProductRequest) returns (stream AddProductResponse);
+    rpc UpdateProduct( stream UpdateProductRequest) returns (stream UpdateProductResponse);
+    rpc AddDeliveryPoint( stream AddDeliveryPointRequest) returns (stream AddDeliveryPointResponse);
+
+
+
+
 }
