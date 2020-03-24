@@ -133,7 +133,8 @@ message OrderReply {
 }
 
 message AvailableProductRequest {
-
+    // Uuid v4
+    string delivery_point_uuid = 1;
 }
 
 message AvailableProductReply {
