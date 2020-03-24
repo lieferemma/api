@@ -58,4 +58,4 @@ prerequisits:
 
 Lieferemma is still in development stage therefore not all needed information is in the API yet.
 
-- [ ] Add commisioning workflow via getItemsforRoute to be able to check that you have everything before you drive off
+- [ ] Add the possibilty for the producer to reject a customer order
