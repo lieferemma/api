@@ -79,14 +79,13 @@ enum Currency {
 
 // Supported Measurement Packaging units for your product 
 enum Unit {
-    KG = 0;
+    G = 0; // gramm 
     PIECE = 1;
     METER = 2;
     CRATE = 3; 
     BOTTLE = 4;
     BARREL = 5;
-
-
+    ML = 6; // ml
 }
 
 message Product {
@@ -104,7 +103,7 @@ message Product {
     // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
     Unit unit = 7;
     // The max possible order size for each product ( Defined to not have to create a inventory)
-    string max_order = 8;
+    uint32 max_order = 8;
 }
 
 /// Product which is currently loaded into a vehicle for delivery and available for order
@@ -153,7 +152,6 @@ message OrderReply {
 
 //TODO: Decide if to use devlivery point or mobile shop uuid to get the available product
 message AvailableProductRequest {
-    
     string mobile_shop_uuid = 1;
 }
 
@@ -271,7 +269,7 @@ message AddProductRequest {
     // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
     Unit unit = 7;
     // The max possible order size for each product ( Defined to not have to create a inventory)
-    string max_order = 8;
+    uint32 max_order = 8;
 }
 
 
@@ -314,7 +312,7 @@ message UpdateProductRequest {
     // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
     Unit unit = 7;
     // The max possible order size for each product ( Defined to not have to create a inventory)
-    string max_order = 8;
+    uint32 max_order = 8;
 }
 
 message UpdateProductResponse {
@@ -343,8 +341,8 @@ message AddDeliveryPointResponse {
 
 
 service Producer {
-    rpc CreateShop( CreateShopRequest) returns (CreateShopResponse);
-    rpc AddProduct( stream AddProductRequest) returns (stream AddProductResponse);
-    rpc UpdateProduct( stream UpdateProductRequest) returns (stream UpdateProductResponse);
-    rpc AddDeliveryPoint( stream AddDeliveryPointRequest) returns (stream AddDeliveryPointResponse);
+    rpc CreateShop(CreateShopRequest) returns (CreateShopResponse);
+    rpc AddProduct(AddProductRequest) returns (AddProductResponse);
+    rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
+    rpc AddDeliveryPoint(AddDeliveryPointRequest) returns (AddDeliveryPointResponse);
 }
