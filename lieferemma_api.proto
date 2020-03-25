@@ -43,28 +43,31 @@ message Route {
 }
 
 // A mobile shop (Emma)
+// This represents the shop as it can be seen from the customer perspective
 message MobileShop {
     //
     string mobile_shop_uuid = 1;
     // link to image of shop
     string image_url = 2;
-    // Title of delivery to be displayed to customer e.g. Bakery John Doe
+    // Title of the shop to be displayed to customer e.g. Bakery John Doe
     string title = 3;
+    // Phone number the customer can call if she has questions about the products ( allergies etc. )
+    string phone_number = 4;
     // Last location updated
-    Position current_position = 4;
+    Position current_position = 5;
     // Last location update
-    google.protobuf.Timestamp last_seen = 5;
+    google.protobuf.Timestamp last_seen = 6;
     // Current delivery point
-    DeliveryPoint current_delivery_point = 6;
+    DeliveryPoint current_delivery_point = 7;
     // Next delivery point
-    DeliveryPoint next_delivery_point = 7;
+    DeliveryPoint next_delivery_point = 8;
     // Is the delivery vehicle currently stationary or not
-    DeliveryStatus delivery_status = 8;
+    DeliveryStatus delivery_status = 9;
     // Estimated time of arrival at next delivery point
-    google.protobuf.Timestamp next_delivery_point_eta = 9;
+    google.protobuf.Timestamp next_delivery_point_eta = 10;
     // Estimated time of arrival at the pick up delivery point
-    google.protobuf.Timestamp pick_up_delivery_point_eta = 10;
-    Route route = 11;
+    google.protobuf.Timestamp pick_up_delivery_point_eta = 11;
+    Route route = 12;
 }
 
 // ISO Codes Currency
@@ -72,6 +75,17 @@ message MobileShop {
 enum Currency {
     DEFAULT = 0;
     EUR = 978;
+}
+
+// Supported Measurement Packaging units for your product 
+enum Unit {
+    G = 0; // gramm 
+    PIECE = 1;
+    METER = 2;
+    CRATE = 3; 
+    BOTTLE = 4;
+    BARREL = 5;
+    ML = 6; // ml
 }
 
 message Product {
@@ -86,6 +100,10 @@ message Product {
     uint64 price = 5;
     // Currency to display
     Currency currency = 6;
+    // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
+    Unit unit = 7;
+    // The max possible order size for each product ( Defined to not have to create a inventory)
+    uint32 max_order = 8;
 }
 
 /// Product which is currently loaded into a vehicle for delivery and available for order
@@ -132,9 +150,9 @@ message OrderReply {
     repeated OrderedProduct ordered_products = 6;
 }
 
+//TODO: Decide if to use devlivery point or mobile shop uuid to get the available product
 message AvailableProductRequest {
-    // Uuid v4
-    string delivery_point_uuid = 1;
+    string mobile_shop_uuid = 1;
 }
 
 message AvailableProductReply {
@@ -230,4 +248,101 @@ service Driver {
     // Order has been deliverd to customer, confirm delivery
     rpc ConfirmOrderDelivery(ConfirmOrderDeliveryRequest) returns (ConfirmOrderDeliveryReply);
     rpc UpdateDeliveryStatus(UpdateDeliveryStatusRequest) returns (UpdateDeliveryStatusReply);
+}
+
+// ########################################### Producer APIs ##################################
+
+
+message AddProductRequest {
+    // shop id that the product will be part of 
+    string mobile_shop_uuid = 1;
+    // Title of the product
+    string title = 2;
+    // Description of the Product
+    string description  = 3;
+    // image transformed to a byte array ( is optional in the beginning)
+    bytes image = 4;
+    // Price in Euro cents
+    uint64 price = 5;
+    // Currency to display
+    Currency currency = 6;
+    // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
+    Unit unit = 7;
+    // The max possible order size for each product ( Defined to not have to create a inventory)
+    uint32 max_order = 8;
+}
+
+
+
+
+message AddProductResponse {
+    // Created uuid for your product
+    string product_uuid = 1;
+// maybe add a status response in the future 
+
+}
+message CreateShopRequest {
+    // image that will be shown to the customer
+    bytes shop_icon = 2;
+    // Title of the shop to be displayed to customer e.g. Bakery John Doe
+    string title = 3;
+    // Phone number the customer can call if she has questions about the products ( allergies etc. )
+    string phone_number = 4;
+    // Last location updated
+   
+}
+
+message CreateShopResponse {
+    string mobile_shop_uuid = 1;
+}
+
+message UpdateProductRequest {
+    // product uuid 
+    string product_uuid = 1;
+    // Title of the product
+    string title = 2;
+    // Description of the Product
+    string description  = 3;
+    // image transformed to a byte array ( is optional in the beginning)
+    bytes image = 4;
+    // Price in Euro cents
+    uint64 price = 5;
+    // Currency to display
+    Currency currency = 6;
+    // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
+    Unit unit = 7;
+    // The max possible order size for each product ( Defined to not have to create a inventory)
+    uint32 max_order = 8;
+}
+
+message UpdateProductResponse {
+}
+
+message AddDeliveryPointRequest {
+    // Uuid v4
+    string mobile_shop_uuid = 1;
+    // position of this delivery point
+    Position position = 2;
+    // planned arrival time for this delivery point
+    google.protobuf.Timestamp scheduled_time = 3;
+    // planned depature time (when parking position is left) for this delivery point
+    google.protobuf.Timestamp  departure_time = 4;
+}
+
+message AddDeliveryPointResponse {
+     // Uuid v4 of the created point
+     string delivery_point_uuid = 1;
+
+}
+
+
+
+
+
+
+service Producer {
+    rpc CreateShop(CreateShopRequest) returns (CreateShopResponse);
+    rpc AddProduct(AddProductRequest) returns (AddProductResponse);
+    rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
+    rpc AddDeliveryPoint(AddDeliveryPointRequest) returns (AddDeliveryPointResponse);
 }
