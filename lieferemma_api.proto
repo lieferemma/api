@@ -67,7 +67,10 @@ message MobileShop {
     google.protobuf.Timestamp next_delivery_point_eta = 10;
     // Estimated time of arrival at the pick up delivery point
     google.protobuf.Timestamp pick_up_delivery_point_eta = 11;
+    // route that the shop is taking
     Route route = 12;
+    // paypal payment info: PRODUCTION_CLIENT_ID as given by paypal to the shop
+    string production_client_id = 13; 
 }
 
 // ISO Codes Currency
@@ -88,6 +91,18 @@ enum Unit {
     ML = 6; // ml
 }
 
+enum ShipmentStatus{
+    CREATED = 0;
+    LOADED = 1;
+    SENT = 2;
+    COLLECTED = 3;
+}
+
+enum PaymentStatus{
+    NOTPAYED = 0;
+    PAYED = 1;
+}
+
 message Product {
     string product_uuid = 1;
     // Title of the product
@@ -104,6 +119,25 @@ message Product {
     Unit unit = 7;
     // The max possible order size for each product ( Defined to not have to create a inventory)
     uint32 max_order = 8;
+}
+
+message Order {
+    string order_uuid = 1;
+    // human readable order id
+    string order_id = 2;
+    // Location where the customer wants to pickup the order
+    DeliveryPoint pick_up_point = 3;
+    // Currency to display
+    Currency currency = 4;
+    // total price of all products in Euro cents ( total done by backend as point of truth)
+    uint64 total = 5;
+    // Items that have been ordered by the customer
+    repeated OrderedProduct ordered_products = 6;
+
+    ShipmentStatus shipment_status = 7;
+
+    PaymentStatus payment_status = 8;
+
 }
 
 /// Product which is currently loaded into a vehicle for delivery and available for order
@@ -137,17 +171,7 @@ message OrderRequest {
 }
 
 message OrderReply {
-    string order_uuid = 1;
-    // human readable order id
-    string order_id = 2;
-    // Location where the customer wants to pickup the order
-    DeliveryPoint pick_up_point = 3;
-    // Currency to display
-    Currency currency = 4;
-    // total price of all products in Euro cents ( total done by backend as point of truth)
-    uint64 total = 5;
-    // Items that have been ordered by the customer
-    repeated OrderedProduct ordered_products = 6;
+    Order order = 1;
 }
 
 //TODO: Decide if to use devlivery point or mobile shop uuid to get the available product
