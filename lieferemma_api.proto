@@ -122,21 +122,28 @@ message Product {
 }
 
 message Order {
-    string order_uuid = 1;
+    // Shop that will receive the payment
+    string mobile_shop_uuid = 1;
+    // Timestamp of the order creation
+    google.protobuf.Timestamp creation_time = 2;
+    // Time of last update of the order
+    google.protobuf.Timestamp update_time = 3;
+    
+    string order_uuid = 4;
     // human readable order id
-    string order_id = 2;
+    string order_id = 5;
     // Location where the customer wants to pickup the order
-    DeliveryPoint pick_up_point = 3;
+    DeliveryPoint pick_up_point = 6;
     // Currency to display
-    Currency currency = 4;
+    Currency currency = 7;
     // total price of all products in Euro cents ( total done by backend as point of truth)
-    uint64 total = 5;
+    uint64 total = 8;
     // Items that have been ordered by the customer
-    repeated OrderedProduct ordered_products = 6;
+    repeated OrderedProduct ordered_products = 9;
 
-    ShipmentStatus shipment_status = 7;
+    ShipmentStatus shipment_status = 10;
 
-    PaymentStatus payment_status = 8;
+    PaymentStatus payment_status = 11;
 
 }
 
