@@ -70,7 +70,7 @@ message MobileShop {
     // route that the shop is taking
     Route route = 12;
     // paypal payment info: PRODUCTION_CLIENT_ID as given by paypal to the shop
-    string production_client_id = 13; 
+    string production_client_id = 13;
 }
 
 // ISO Codes Currency
@@ -81,12 +81,12 @@ enum Currency {
     CHF = 756;
 }
 
-// Supported Measurement Packaging units for your product 
+// Supported Measurement Packaging units for your product
 enum Unit {
-    G = 0; // gramm 
+    G = 0; // gramm
     PIECE = 1;
     METER = 2;
-    CRATE = 3; 
+    CRATE = 3;
     BOTTLE = 4;
     BARREL = 5;
     ML = 6; // ml
@@ -129,7 +129,7 @@ message Order {
     google.protobuf.Timestamp creation_time = 2;
     // Time of last update of the order
     google.protobuf.Timestamp update_time = 3;
-    
+
     string order_uuid = 4;
     // human readable order id
     string order_id = 5;
@@ -153,7 +153,7 @@ message TransactionCompleteRequest{
     string paypal_transaction_id = 2;
 }
 
-// Backend verified the transaction and marked the order as payed an ready for further  processing. 
+// Backend verified the transaction and marked the order as payed an ready for further  processing.
 message TransactionCompleteResponse{
     string order_uuid = 1;
     // Paypal transaction id that the app gets from the paypal API
@@ -300,7 +300,7 @@ service Driver {
 
 
 message AddProductRequest {
-    // shop id that the product will be part of 
+    // shop id that the product will be part of
     string mobile_shop_uuid = 1;
     // Title of the product
     string title = 2;
@@ -322,7 +322,7 @@ message AddProductRequest {
 message AddProductResponse {
     // Created uuid for your product
     string product_uuid = 1;
-// maybe add a status response in the future 
+// maybe add a status response in the future
 
 }
 message CreateShopRequest {
@@ -333,7 +333,7 @@ message CreateShopRequest {
     // Phone number the customer can call if she has questions about the products ( allergies etc. )
     string phone_number = 4;
     // Last location updated
-   
+
 }
 
 message CreateShopResponse {
@@ -341,7 +341,7 @@ message CreateShopResponse {
 }
 
 message UpdateProductRequest {
-    // product uuid 
+    // product uuid
     string product_uuid = 1;
     // Title of the product
     string title = 2;
