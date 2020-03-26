@@ -145,7 +145,6 @@ message Order {
     ShipmentStatus shipment_status = 10;
 
     PaymentStatus payment_status = 11;
-
 }
 
 message TransactionCompleteRequest{
