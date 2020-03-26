@@ -297,8 +297,6 @@ message AddProductRequest {
 }
 
 
-
-
 message AddProductResponse {
     // Created uuid for your product
     string product_uuid = 1;
@@ -358,10 +356,6 @@ message AddDeliveryPointResponse {
      string delivery_point_uuid = 1;
 
 }
-
-
-
-
 
 
 service Producer {
