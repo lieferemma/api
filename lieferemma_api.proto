@@ -160,7 +160,6 @@ message TransactionCompleteResponse{
     string paypal_transaction_id = 2;
 }
 
-
 /// Product which is currently loaded into a vehicle for delivery and available for order
 message DeliveryProduct {
     Product product = 1;
