@@ -76,6 +76,7 @@ message MobileShop {
 // ISO Codes Currency
 // https://de.wikipedia.org/wiki/ISO_4217
 enum Currency {
+    INVALID_VALUE = 0; // The 0 value is required by protobuf but is not a valid value!
     EUR = 978;
     USD = 840;
     CHF = 756;
