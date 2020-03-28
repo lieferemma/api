@@ -1,391 +1,407 @@
 
-syntax="proto3";
+syntax = "proto3";
 
 package lieferemma;
 
 import "google/protobuf/timestamp.proto";
 
 message Position {
-    double latitude = 1;
-    double longitude = 2;
+  double latitude = 1;
+  double longitude = 2;
 }
 
 message CustomerInterestRequest {
-    // E.g. center of map
-    Position position_of_interest = 1;
-    // Radius of interest e.g. when viewing map
-    // May be ignored by server when exceeding a certain distance
-    int32 radius_in_meter = 2;
+  // E.g. center of map
+  Position position_of_interest = 1;
+  // Radius of interest e.g. when viewing map
+  // May be ignored by server when exceeding a certain distance
+  int32 radius_in_meter = 2;
 }
 
 enum DeliveryStatus {
-    ON_TOUR = 0;
-    PARKED = 1;
+  // The 0 value is required by protobuf but is not a valid value!
+  DELIVERY_STATUS_UNSPECIFIED = 0;
+  DELIVERY_STATUS_ON_TOUR = 1;
+  DELIVERY_STATUS_PARKED = 2;
 }
 
 message DeliveryPoint {
-    // Uuid v4
-    string delivery_point_uuid = 1;
-    // position of this delivery point
-    Position position = 2;
-    // planned arrival time for this delivery point
-    google.protobuf.Timestamp scheduled_time = 3;
-    // planned depature time (when parking position is left) for this delivery point
-    google.protobuf.Timestamp  departure_time = 4;
+  // Uuid v4
+  string delivery_point_uuid = 1;
+  // position of this delivery point
+  Position position = 2;
+  // planned arrival time for this delivery point
+  google.protobuf.Timestamp scheduled_time = 3;
+  // planned depature time (when parking position is left) for this delivery
+  // point
+  google.protobuf.Timestamp departure_time = 4;
 }
 
 // A delivery route
 message Route {
-    string route_uuid = 1;
-    repeated DeliveryPoint delivery_points = 2;
-    // Route delivery points further refining the route
-    repeated Position route_points = 3;
+  string route_uuid = 1;
+  repeated DeliveryPoint delivery_points = 2;
+  // Route delivery points further refining the route
+  repeated Position route_points = 3;
 }
 
 // A mobile shop (Emma)
 // This represents the shop as it can be seen from the customer perspective
 message MobileShop {
-    //
-    string mobile_shop_uuid = 1;
-    // link to image of shop
-    string image_url = 2;
-    // Title of the shop to be displayed to customer e.g. Bakery John Doe
-    string title = 3;
-    // Phone number the customer can call if she has questions about the products ( allergies etc. )
-    string phone_number = 4;
-    // Last location updated
-    Position current_position = 5;
-    // Last location update
-    google.protobuf.Timestamp last_seen = 6;
-    // Current delivery point
-    DeliveryPoint current_delivery_point = 7;
-    // Next delivery point
-    DeliveryPoint next_delivery_point = 8;
-    // Is the delivery vehicle currently stationary or not
-    DeliveryStatus delivery_status = 9;
-    // Estimated time of arrival at next delivery point
-    google.protobuf.Timestamp next_delivery_point_eta = 10;
-    // Estimated time of arrival at the pick up delivery point
-    google.protobuf.Timestamp pick_up_delivery_point_eta = 11;
-    // route that the shop is taking
-    Route route = 12;
-    // paypal payment info: PRODUCTION_CLIENT_ID as given by paypal to the shop
-    string production_client_id = 13;
+  //
+  string mobile_shop_uuid = 1;
+  // link to image of shop
+  string image_url = 2;
+  // Title of the shop to be displayed to customer e.g. Bakery John Doe
+  string title = 3;
+  // Phone number the customer can call if she has questions about the products
+  // ( allergies etc. )
+  string phone_number = 4;
+  // Last location updated
+  Position current_position = 5;
+  // Last location update
+  google.protobuf.Timestamp last_seen = 6;
+  // Current delivery point
+  DeliveryPoint current_delivery_point = 7;
+  // Next delivery point
+  DeliveryPoint next_delivery_point = 8;
+  // Is the delivery vehicle currently stationary or not
+  DeliveryStatus delivery_status = 9;
+  // Estimated time of arrival at next delivery point
+  google.protobuf.Timestamp next_delivery_point_eta = 10;
+  // Estimated time of arrival at the pick up delivery point
+  google.protobuf.Timestamp pick_up_delivery_point_eta = 11;
+  // route that the shop is taking
+  Route route = 12;
+  // paypal payment info: PRODUCTION_CLIENT_ID as given by paypal to the shop
+  string production_client_id = 13;
 }
 
 // ISO Codes Currency
 // https://de.wikipedia.org/wiki/ISO_4217
 enum Currency {
-    INVALID_VALUE = 0; // The 0 value is required by protobuf but is not a valid value!
-    EUR = 978;
-    USD = 840;
-    CHF = 756;
+  // The 0 value is required by protobuf but is not a valid value!
+  CURRENCY_UNSPECIFIED = 0;
+  CURRENCY_EUR = 978;
+  CURRENCY_USD = 840;
+  CURRENCY_CHF = 756;
 }
 
 // Supported Measurement Packaging units for your product
 enum Unit {
-    G = 0; // gramm
-    PIECE = 1;
-    METER = 2;
-    CRATE = 3;
-    BOTTLE = 4;
-    BARREL = 5;
-    ML = 6; // ml
+  // The 0 value is required by protobuf but is not a valid value!
+  UNIT_UNSPECIFIED = 0;
+  UNIT_G = 1; // gramm
+  UNIT_PIECE = 2;
+  UNIT_METER = 3;
+  UNIT_CRATE = 4;
+  UNIT_BOTTLE = 5;
+  UNIT_BARREL = 6;
+  UNIT_ML = 7; // ml
 }
 
-enum ShipmentStatus{
-    CREATED = 0;
-    LOADED = 1;
-    SENT = 2;
-    COLLECTED = 3;
+enum ShipmentStatus {
+  // The 0 value is required by protobuf but is not a valid value!
+  SHIPMENT_STATUS_UNSPECIFIED = 0;
+  SHIPMENT_STATUS_CREATED = 1;
+  SHIPMENT_STATUS_LOADED = 2;
+  SHIPMENT_STATUS_SENT = 3;
+  SHIPMENT_STATUS_COLLECTED = 4;
 }
 
-enum PaymentStatus{
-    NOTPAYED = 0;
-    PAYED = 1;
+enum PaymentStatus {
+  // The 0 value is required by protobuf but is not a valid value!
+  PAYMENT_STATUS_UNSPECIFIED = 0;
+  PAYMENT_STATUS_NOTPAYED = 1;
+  PAYMENT_STATUS_PAYED = 2;
 }
 
 message Product {
-    string product_uuid = 1;
-    // Title of the product
-    string title = 2;
-    // Description of the Product
-    string description  = 3;
-    // link to image of the product
-    string url = 4;
-    // Price in Euro cents
-    uint64 price = 5;
-    // Currency to display
-    Currency currency = 6;
-    // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
-    Unit unit = 7;
-    // The max possible order size for each product ( Defined to not have to create a inventory)
-    uint32 max_order = 8;
+  string product_uuid = 1;
+  // Title of the product
+  string title = 2;
+  // Description of the Product
+  string description = 3;
+  // link to image of the product
+  string url = 4;
+  // Price in Euro cents
+  uint64 price = 5;
+  // Currency to display
+  Currency currency = 6;
+  // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
+  Unit unit = 7;
+  // The max possible order size for each product ( Defined to not have to
+  // create a inventory)
+  uint32 max_order = 8;
 }
 
 message Order {
-    // Shop that will receive the payment
-    string mobile_shop_uuid = 1;
-    // Timestamp of the order creation
-    google.protobuf.Timestamp creation_time = 2;
-    // Time of last update of the order
-    google.protobuf.Timestamp update_time = 3;
+  // Shop that will receive the payment
+  string mobile_shop_uuid = 1;
+  // Timestamp of the order creation
+  google.protobuf.Timestamp creation_time = 2;
+  // Time of last update of the order
+  google.protobuf.Timestamp update_time = 3;
 
-    string order_uuid = 4;
-    // human readable order id
-    string order_id = 5;
-    // Location where the customer wants to pickup the order
-    DeliveryPoint pick_up_point = 6;
-    // Currency to display
-    Currency currency = 7;
-    // total price of all products in Euro cents ( total done by backend as point of truth)
-    uint64 total = 8;
-    // Items that have been ordered by the customer
-    repeated OrderedProduct ordered_products = 9;
+  string order_uuid = 4;
+  // human readable order id
+  string order_id = 5;
+  // Location where the customer wants to pickup the order
+  DeliveryPoint pick_up_point = 6;
+  // Currency to display
+  Currency currency = 7;
+  // total price of all products in Euro cents ( total done by backend as point
+  // of truth)
+  uint64 total = 8;
+  // Items that have been ordered by the customer
+  repeated OrderedProduct ordered_products = 9;
 
-    ShipmentStatus shipment_status = 10;
+  ShipmentStatus shipment_status = 10;
 
-    PaymentStatus payment_status = 11;
-
+  PaymentStatus payment_status = 11;
 }
 
-message TransactionCompleteRequest{
-    string order_uuid = 1;
-    // Paypal transaction id that the app gets from the paypal API
-    string paypal_transaction_id = 2;
+message TransactionCompleteRequest {
+  string order_uuid = 1;
+  // Paypal transaction id that the app gets from the paypal API
+  string paypal_transaction_id = 2;
 }
 
-// Backend verified the transaction and marked the order as payed an ready for further  processing.
-message TransactionCompleteResponse{
-    string order_uuid = 1;
-    // Paypal transaction id that the app gets from the paypal API
-    string paypal_transaction_id = 2;
+// Backend verified the transaction and marked the order as payed an ready for
+// further  processing.
+message TransactionCompleteResponse {
+  string order_uuid = 1;
+  // Paypal transaction id that the app gets from the paypal API
+  string paypal_transaction_id = 2;
 }
 
-
-/// Product which is currently loaded into a vehicle for delivery and available for order
+/// Product which is currently loaded into a vehicle for delivery and available
+/// for order
 message DeliveryProduct {
-    Product product = 1;
-    // Number of articles available in delivery.
-    // Quantity is zero when product is out of stock.
-    uint64 quantity_available = 2;
+  Product product = 1;
+  // Number of articles available in delivery.
+  // Quantity is zero when product is out of stock.
+  uint64 quantity_available = 2;
 }
 
 /// A product by a customer including the quantity ordered
-message OrderedProduct  {
-    Product product = 1;
-    // Number of articles availableq in delivery
-    uint64 quantity_ordered = 2;
-    // Price in Euro cents
-    uint64 total_price = 3;
-    // Currency to display
-    Currency currency = 4;
+message OrderedProduct {
+  Product product = 1;
+  // Number of articles availableq in delivery
+  uint64 quantity_ordered = 2;
+  // Price in Euro cents
+  uint64 total_price = 3;
+  // Currency to display
+  Currency currency = 4;
 }
 
 message OrderRequest {
-    // Shop (emma) where the order was placed
-    string shop_uuid = 1;
-    // Location where the customer wants to pickup the order
-    DeliveryPoint pick_up_point = 2;
-    // Currency to display
-    Currency currency = 3;
-    // Items that have been ordered by the customer
-    repeated OrderedProduct ordered_products = 4;
+  // Shop (emma) where the order was placed
+  string shop_uuid = 1;
+  // Location where the customer wants to pickup the order
+  DeliveryPoint pick_up_point = 2;
+  // Currency to display
+  Currency currency = 3;
+  // Items that have been ordered by the customer
+  repeated OrderedProduct ordered_products = 4;
 }
 
 message OrderReply {
-    Order order = 1;
+  Order order = 1;
 }
 
-//TODO: Decide if to use devlivery point or mobile shop uuid to get the available product
+// TODO: Decide if to use devlivery point or mobile shop uuid to get the
+// available product
 message AvailableProductRequest {
-    string mobile_shop_uuid = 1;
+  string mobile_shop_uuid = 1;
 }
 
 message AvailableProductReply {
-    // Timestamp when this quantity was updated
-    google.protobuf.Timestamp updated = 1;
-    // Currently available products.
-    // Quantity is zero if product is out of stock.
-    repeated DeliveryProduct deliverable_products = 2;
+  // Timestamp when this quantity was updated
+  google.protobuf.Timestamp updated = 1;
+  // Currently available products.
+  // Quantity is zero if product is out of stock.
+  repeated DeliveryProduct deliverable_products = 2;
 }
 
 // Real time product available quantity for a given delivery
 message AvailableProductQuantityReply {
-    string shop_uuid = 1;
-    // product uuid from Product
-    string product_uuid = 2;
-    uint32 quantity = 3;
-    // Timestamp when this quantity was updated
-    google.protobuf.Timestamp updated = 4;
+  string shop_uuid = 1;
+  // product uuid from Product
+  string product_uuid = 2;
+  uint32 quantity = 3;
+  // Timestamp when this quantity was updated
+  google.protobuf.Timestamp updated = 4;
 }
 
 message OrderStatusRequest {
-    string order_uuid = 1;
+  string order_uuid = 1;
 }
 
 message OrderStatusReply {
-    string order_uuid = 1;
-    // Location where the customer wants to pickup the order
-    DeliveryPoint pick_up_point = 2;
-    // delivery status of requested order
-    MobileShop shop_status = 3;
+  string order_uuid = 1;
+  // Location where the customer wants to pickup the order
+  DeliveryPoint pick_up_point = 2;
+  // delivery status of requested order
+  MobileShop shop_status = 3;
 }
 
 service EndCustomer {
-    // Not necessarily as in register a user account more like let me know when the delivery
-    // reaches a destination I have shown interest in. And what deliveries can be displayed on the map.
-    rpc RegisterCustomerInterest (CustomerInterestRequest) returns (stream MobileShop);
-    rpc PlaceOrder (OrderRequest) returns (OrderReply);
-    // To complete the order the client uses the transaction Complete rpc after the payment is done
-    rpc CompleteTransaction (TransactionCompleteRequest) returns (TransactionCompleteResponse);
-    rpc AvailableProducts(AvailableProductRequest) returns (AvailableProductReply);
-    rpc OrderStatus (OrderStatusRequest) returns (OrderStatusReply);
+  // Not necessarily as in register a user account more like let me know when
+  // the delivery reaches a destination I have shown interest in. And what
+  // deliveries can be displayed on the map.
+  rpc RegisterCustomerInterest(CustomerInterestRequest) returns (stream MobileShop);
+  rpc PlaceOrder(OrderRequest) returns (OrderReply);
+  // To complete the order the client uses the transaction Complete rpc after
+  // the payment is done
+  rpc CompleteTransaction(TransactionCompleteRequest) returns (TransactionCompleteResponse);
+  rpc AvailableProducts(AvailableProductRequest) returns (AvailableProductReply);
+  rpc OrderStatus(OrderStatusRequest) returns (OrderStatusReply);
 }
 
 message DriverPosition {
-    Position position = 1;
-    google.protobuf.Timestamp updated = 2;
+  Position position = 1;
+  google.protobuf.Timestamp updated = 2;
 }
 
 message SendPositionReply {}
 
 message ConfirmOrderDeliveryRequest {
-    // uuid of delivered order
-    string order_uuid = 1;
-    // Location where the customer picked up the order
-    DeliveryPoint pick_up_point = 2;
+  // uuid of delivered order
+  string order_uuid = 1;
+  // Location where the customer picked up the order
+  DeliveryPoint pick_up_point = 2;
 }
 
 message UpdateDeliveryStatusRequest {
-    string mobile_shop_uuid = 1;
-    DeliveryStatus delivery_status = 2;
+  string mobile_shop_uuid = 1;
+  DeliveryStatus delivery_status = 2;
 }
 
-message UpdateDeliveryStatusReply  {
-    // for now empty, keep it for future use
+message UpdateDeliveryStatusReply {
+  // for now empty, keep it for future use
 }
 
 message ConfirmOrderDeliveryReply {
-    // for now empty, keep it for future use
+  // for now empty, keep it for future use
 }
 
 message GetOrdersRequest {
-    string mobile_shop_uuid = 1;
-    // request orders for pick_up_point, this is optional
-    DeliveryPoint pick_up_point = 2;
+  string mobile_shop_uuid = 1;
+  // request orders for pick_up_point, this is optional
+  DeliveryPoint pick_up_point = 2;
 }
 
 message GetOrdersReply {
-    // customers order for the requested delivery
-    repeated OrderReply orders = 1;
+  // customers order for the requested delivery
+  repeated OrderReply orders = 1;
 }
 
 message GetRouteRequest {
-    // route_id is a what3words style id, this is not request able by api
-    string route_id = 1;
+  // route_id is a what3words style id, this is not request able by api
+  string route_id = 1;
 }
 
 service Driver {
-    // Retrieve current orders
-    rpc GetOrders (GetOrdersRequest) returns (GetOrdersReply);
+  // Retrieve current orders
+  rpc GetOrders(GetOrdersRequest) returns (GetOrdersReply);
 
-    // For now there will likely only be one stream update at the beginning.
-    // The stream allows updating the route.
-    rpc GetRoute (GetRouteRequest) returns (stream Route);
-    rpc SendPosition (DriverPosition) returns (SendPositionReply);
-    // Order has been deliverd to customer, confirm delivery
-    rpc ConfirmOrderDelivery(ConfirmOrderDeliveryRequest) returns (ConfirmOrderDeliveryReply);
-    rpc UpdateDeliveryStatus(UpdateDeliveryStatusRequest) returns (UpdateDeliveryStatusReply);
+  // For now there will likely only be one stream update at the beginning.
+  // The stream allows updating the route.
+  rpc GetRoute(GetRouteRequest) returns (stream Route);
+
+  rpc SendPosition(DriverPosition) returns (SendPositionReply);
+
+  // Order has been deliverd to customer, confirm delivery
+  rpc ConfirmOrderDelivery(ConfirmOrderDeliveryRequest) returns (ConfirmOrderDeliveryReply);
+
+  rpc UpdateDeliveryStatus(UpdateDeliveryStatusRequest) returns (UpdateDeliveryStatusReply);
 }
 
-// ########################################### Producer APIs ##################################
-
+// ########### Producer APIs ###########
 
 message AddProductRequest {
-    // shop id that the product will be part of
-    string mobile_shop_uuid = 1;
-    // Title of the product
-    string title = 2;
-    // Description of the Product
-    string description  = 3;
-    // image transformed to a byte array ( is optional in the beginning)
-    bytes image = 4;
-    // Price in Euro cents
-    uint64 price = 5;
-    // Currency to display
-    Currency currency = 6;
-    // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
-    Unit unit = 7;
-    // The max possible order size for each product ( Defined to not have to create a inventory)
-    uint32 max_order = 8;
+  // shop id that the product will be part of
+  string mobile_shop_uuid = 1;
+  // Title of the product
+  string title = 2;
+  // Description of the Product
+  string description = 3;
+  // image transformed to a byte array ( is optional in the beginning)
+  bytes image = 4;
+  // Price in Euro cents
+  uint64 price = 5;
+  // Currency to display
+  Currency currency = 6;
+  // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
+  Unit unit = 7;
+  // The max possible order size for each product ( Defined to not have to
+  // create a inventory)
+  uint32 max_order = 8;
 }
-
 
 message AddProductResponse {
-    // Created uuid for your product
-    string product_uuid = 1;
-// maybe add a status response in the future
-
+  // Created uuid for your product
+  string product_uuid = 1;
+  // maybe add a status response in the future
 }
 message CreateShopRequest {
-    // image that will be shown to the customer
-    bytes shop_icon = 2;
-    // Title of the shop to be displayed to customer e.g. Bakery John Doe
-    string title = 3;
-    // Phone number the customer can call if she has questions about the products ( allergies etc. )
-    string phone_number = 4;
-    // Last location updated
-
+  // image that will be shown to the customer
+  bytes shop_icon = 2;
+  // Title of the shop to be displayed to customer e.g. Bakery John Doe
+  string title = 3;
+  // Phone number the customer can call if she has questions about the products
+  // ( allergies etc. )
+  string phone_number = 4;
+  // Last location updated
 }
 
 message CreateShopResponse {
-    string mobile_shop_uuid = 1;
+  string mobile_shop_uuid = 1;
 }
 
 message UpdateProductRequest {
-    // product uuid
-    string product_uuid = 1;
-    // Title of the product
-    string title = 2;
-    // Description of the Product
-    string description  = 3;
-    // image transformed to a byte array ( is optional in the beginning)
-    bytes image = 4;
-    // Price in Euro cents
-    uint64 price = 5;
-    // Currency to display
-    Currency currency = 6;
-    // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
-    Unit unit = 7;
-    // The max possible order size for each product ( Defined to not have to create a inventory)
-    uint32 max_order = 8;
+  // product uuid
+  string product_uuid = 1;
+  // Title of the product
+  string title = 2;
+  // Description of the Product
+  string description = 3;
+  // image transformed to a byte array ( is optional in the beginning)
+  bytes image = 4;
+  // Price in Euro cents
+  uint64 price = 5;
+  // Currency to display
+  Currency currency = 6;
+  // the unit the product is sold in e.g ( Stück, kg, Kasten, m )
+  Unit unit = 7;
+  // The max possible order size for each product ( Defined to not have to
+  // create a inventory)
+  uint32 max_order = 8;
 }
 
-message UpdateProductResponse {
-}
+message UpdateProductResponse {}
 
 message AddDeliveryPointRequest {
-    // Uuid v4
-    string mobile_shop_uuid = 1;
-    // position of this delivery point
-    Position position = 2;
-    // planned arrival time for this delivery point
-    google.protobuf.Timestamp scheduled_time = 3;
-    // planned depature time (when parking position is left) for this delivery point
-    google.protobuf.Timestamp  departure_time = 4;
+  // Uuid v4
+  string mobile_shop_uuid = 1;
+  // position of this delivery point
+  Position position = 2;
+  // planned arrival time for this delivery point
+  google.protobuf.Timestamp scheduled_time = 3;
+  // planned depature time (when parking position is left) for this delivery
+  // point
+  google.protobuf.Timestamp departure_time = 4;
 }
 
 message AddDeliveryPointResponse {
-     // Uuid v4 of the created point
-     string delivery_point_uuid = 1;
-
+  // Uuid v4 of the created point
+  string delivery_point_uuid = 1;
 }
 
-
 service Producer {
-    rpc CreateShop(CreateShopRequest) returns (CreateShopResponse);
-    rpc AddProduct(AddProductRequest) returns (AddProductResponse);
-    rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
-    rpc AddDeliveryPoint(AddDeliveryPointRequest) returns (AddDeliveryPointResponse);
+  rpc CreateShop(CreateShopRequest) returns (CreateShopResponse);
+  rpc AddProduct(AddProductRequest) returns (AddProductResponse);
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
+  rpc AddDeliveryPoint(AddDeliveryPointRequest) returns (AddDeliveryPointResponse);
 }
