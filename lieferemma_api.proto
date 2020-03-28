@@ -187,12 +187,10 @@ message DeliveryProduct {
 /// A product by a customer including the quantity ordered
 message OrderedProduct {
   Product product = 1;
-  // Number of articles availableq in delivery
+  // Number of articles ordered
   uint64 quantity_ordered = 2;
-  // Price in Euro cents
-  uint64 total_price = 3;
   // Currency to display
-  Currency currency = 4;
+  Currency currency = 3;
 }
 
 message OrderRequest {
