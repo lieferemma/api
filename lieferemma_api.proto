@@ -76,8 +76,9 @@ message MobileShop {
 // ISO Codes Currency
 // https://de.wikipedia.org/wiki/ISO_4217
 enum Currency {
-    DEFAULT = 0;
     EUR = 978;
+    USD = 840;
+    CHF = 756;
 }
 
 // Supported Measurement Packaging units for your product 
@@ -146,6 +147,20 @@ message Order {
     PaymentStatus payment_status = 11;
 
 }
+
+message TransactionCompleteRequest{
+    string order_uuid = 1;
+    // Paypal transaction id that the app gets from the paypal API
+    string paypal_transaction_id = 2;
+}
+
+// Backend verified the transaction and marked the order as payed an ready for further  processing. 
+message TransactionCompleteResponse{
+    string order_uuid = 1;
+    // Paypal transaction id that the app gets from the paypal API
+    string paypal_transaction_id = 2;
+}
+
 
 /// Product which is currently loaded into a vehicle for delivery and available for order
 message DeliveryProduct {
@@ -221,6 +236,8 @@ service EndCustomer {
     // reaches a destination I have shown interest in. And what deliveries can be displayed on the map.
     rpc RegisterCustomerInterest (CustomerInterestRequest) returns (stream MobileShop);
     rpc PlaceOrder (OrderRequest) returns (OrderReply);
+    // To complete the order the client uses the transaction Complete rpc after the payment is done
+    rpc CompleteTransaction (TransactionCompleteRequest) returns (TransactionCompleteResponse);
     rpc AvailableProducts(AvailableProductRequest) returns (AvailableProductReply);
     rpc OrderStatus (OrderStatusRequest) returns (OrderStatusReply);
 }
