@@ -135,32 +135,6 @@ message Product {
   uint32 max_order = 8;
 }
 
-message Order {
-  // Shop that will receive the payment
-  string mobile_shop_uuid = 1;
-  // Timestamp of the order creation
-  google.protobuf.Timestamp creation_time = 2;
-  // Time of last update of the order
-  google.protobuf.Timestamp update_time = 3;
-
-  string order_uuid = 4;
-  // human readable order id
-  string order_id = 5;
-  // Location where the customer wants to pickup the order
-  DeliveryPoint pick_up_point = 6;
-  // Currency to display
-  Currency currency = 7;
-  // total price of all products in Euro cents ( total done by backend as point
-  // of truth)
-  uint64 total = 8;
-  // Items that have been ordered by the customer
-  repeated OrderedProduct ordered_products = 9;
-
-  ShipmentStatus shipment_status = 10;
-
-  PaymentStatus payment_status = 11;
-}
-
 message TransactionCompleteRequest {
   string order_uuid = 1;
   // Paypal transaction id that the app gets from the paypal API
@@ -184,13 +158,11 @@ message DeliveryProduct {
   uint64 quantity_available = 2;
 }
 
-/// A product by a customer including the quantity ordered
-message OrderedProduct {
+/// Customer product order including the quantity ordered
+message OrderRequestProduct {
   string product_uuid = 1;
   // Number of articles ordered
   uint64 quantity_ordered = 2;
-  // Currency to display
-  Currency currency = 3;
 }
 
 message OrderRequest {
@@ -201,11 +173,44 @@ message OrderRequest {
   // Currency to display
   Currency currency = 3;
   // Items that have been ordered by the customer
-  repeated OrderedProduct ordered_products = 4;
+  repeated OrderRequestProduct ordered_products = 4;
+}
+
+/// A product by a customer including the quantity ordered
+message OrderReplyProduct {
+  Product product = 1;
+  // Number of articles ordered
+  uint64 quantity_ordered = 2;
+  // Price in Euro cents
+  uint64 total_price = 3;
+  // Currency to display
+  Currency currency = 4;
 }
 
 message OrderReply {
-  Order order = 1;
+  // Shop that will receive the payment
+  string mobile_shop_uuid = 1;
+  // Timestamp of the order creation
+  google.protobuf.Timestamp creation_time = 2;
+  // Time of last update of the order
+  google.protobuf.Timestamp update_time = 3;
+
+  string order_uuid = 4;
+  // human readable order id
+  string order_id = 5;
+  // Location where the customer wants to pickup the order
+  DeliveryPoint pick_up_point = 6;
+  // Currency to display
+  Currency currency = 7;
+  // total price of all products in Euro cents ( total done by backend as point
+  // of truth)
+  uint64 total = 8;
+  // Items that have been ordered by the customer
+  repeated OrderReplyProduct ordered_products = 9;
+
+  ShipmentStatus shipment_status = 10;
+
+  PaymentStatus payment_status = 11;
 }
 
 // TODO: Decide if to use devlivery point or mobile shop uuid to get the
