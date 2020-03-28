@@ -1,5 +1,7 @@
 # Lieferemma gRPC API
 
+[![Lint Status](https://github.com/lieferemma/api/workflows/lint%20protobuf/badge.svg)](https://github.com/lieferemma/api/actions?query=workflow%3A"lint+protobuf")
+
 Lieferemma uses gRPC to communicate between the different Clients and the Server. In this repo you can find
 the proto-file and the generated code.
 
