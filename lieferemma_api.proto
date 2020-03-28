@@ -160,6 +160,20 @@ message TransactionCompleteResponse{
     string paypal_transaction_id = 2;
 }
 
+message TransactionCompleteRequest{
+    string order_uuid = 1;
+    // Paypal transaction id that the app gets from the paypal API
+    string paypal_transaction_id = 2;
+}
+
+// Backend verified the transaction and marked the order as payed an ready for further  processing. 
+message TransactionCompleteResponse{
+    string order_uuid = 1;
+    // Paypal transaction id that the app gets from the paypal API
+    string paypal_transaction_id = 2;
+}
+
+
 /// Product which is currently loaded into a vehicle for delivery and available for order
 message DeliveryProduct {
     Product product = 1;
