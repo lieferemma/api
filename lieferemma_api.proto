@@ -186,7 +186,7 @@ message DeliveryProduct {
 
 /// A product by a customer including the quantity ordered
 message OrderedProduct {
-  Product product = 1;
+  string product_uuid = 1;
   // Number of articles ordered
   uint64 quantity_ordered = 2;
   // Currency to display
